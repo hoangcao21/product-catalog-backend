@@ -37,7 +37,7 @@ export async function seedUpProducts() {
 
   await Promise.all(seedData.map((data) => data.save()));
 
-  const result = await ProductModel.scan().all().exec();
+  const result = await ProductModel.scan().count().exec();
 
   console.log('✅ Data is seeded into ProductTable', { result });
 }

@@ -1,5 +1,3 @@
-import { ObjectType } from 'dynamoose/dist/General';
-import { AttributeMap } from 'dynamoose/dist/Types';
 import {
   ProductCategory,
   ProductEntity,
@@ -9,7 +7,7 @@ import { ProductModel } from 'src/modules/product/entities/product.repository';
 import { BaseBuilder } from './base.builder';
 
 export class ProductEntityBuilder extends BaseBuilder<ProductEntity> {
-  protected object: AttributeMap | ObjectType = {};
+  protected object: Partial<ProductEntity> = {};
 
   buildProductId(value: string) {
     this.object.productId = value;
