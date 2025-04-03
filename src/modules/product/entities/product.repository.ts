@@ -1,12 +1,20 @@
 import * as dynamoose from 'dynamoose';
-import { Condition } from 'dynamoose/dist/Condition';
-import { QueryResponse } from 'dynamoose/dist/ItemRetriever';
-import { CursorUtils } from 'src/shared/cursor';
-import { PaginatedQueryDbResponse } from 'src/shared/paginated-query-response';
+import { Query, Scan } from 'dynamoose/dist/ItemRetriever';
+import { PaginationQueryResponse } from 'src/shared/database/pagination-query-response';
+import { Repository } from 'src/shared/database/repository';
+import { isDefined } from 'src/shared/validation';
 
+import { GetProductQueryDto } from '../dtos/request/get-product.query.dto';
 import { ProductEntity } from './product.entity';
 
-const ProductModel = dynamoose.model<ProductEntity>('Product', {
+const CategoryGlobalIndex = {
+  type: 'global',
+  name: 'categoryGlobalIndex',
+  project: true,
+  rangeKey: 'productId',
+};
+
+const ProductModelSchema = new dynamoose.Schema({
   productId: {
     type: String,
     hashKey: true,
@@ -35,6 +43,8 @@ const ProductModel = dynamoose.model<ProductEntity>('Product', {
   categoryLowercase: {
     type: String,
     required: true,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    index: CategoryGlobalIndex as any,
   },
   imageUrl: {
     type: String,
@@ -42,39 +52,48 @@ const ProductModel = dynamoose.model<ProductEntity>('Product', {
   },
 });
 
-export class ProductRepository {
-  private readonly model: typeof ProductModel = ProductModel;
+export const ProductModel = dynamoose.model<ProductEntity>(
+  'Product',
+  ProductModelSchema,
+);
 
-  async getManyByProps(props: {
-    name?: string;
-    category?: string;
-    pageSize?: number;
-    cursor?: string; // String in Base64 format
-  }): Promise<PaginatedQueryDbResponse<ProductEntity>> {
-    const { name, category, pageSize, cursor } = props;
+export async function createProductTable() {
+  console.log('🔃 Creating/Updating ProductTable');
 
-    let condition: Condition = new Condition();
+  // Create if not existing, else update
+  await new dynamoose.Table('ProductTable', [ProductModel], {
+    initialize: false,
+  }).initialize();
 
-    if (name) {
-      condition = condition.where('nameLowercase').contains(name.toLowerCase());
+  console.log('✅ ProductTable is existing');
+}
+
+export class ProductRepository extends Repository<ProductEntity> {
+  constructor() {
+    super(ProductModel);
+  }
+
+  async findByProps(
+    props: GetProductQueryDto,
+  ): Promise<PaginationQueryResponse<ProductEntity>> {
+    const { category, name, limit, cursor } = props;
+
+    let operation: Query<ProductEntity> | Scan<ProductEntity> = this.model
+      .query('categoryLowercase')
+      .eq(category)
+      .using(CategoryGlobalIndex.name);
+
+    if (isDefined(name)) {
+      operation = this.model
+        .scan('categoryLowercase')
+        .eq(category.toLowerCase())
+        .where('nameLowercase')
+        .contains(name.toLowerCase()) // "contains" does not support non-key attribute when uses with ".query()" function yet
+        .using(CategoryGlobalIndex.name);
     }
 
-    if (category) {
-      condition = condition
-        .where('categoryLowercase')
-        .contains(category.toLowerCase());
-    }
+    const result = await this.paginate(operation, cursor, limit);
 
-    const results: QueryResponse<ProductEntity> = await this.model
-      .query(condition)
-      .limit(pageSize)
-      .startAt(CursorUtils.toObject(cursor))
-      .exec();
-
-    return new PaginatedQueryDbResponse(
-      results,
-      results.count,
-      results.lastKey,
-    );
+    return result;
   }
 }
