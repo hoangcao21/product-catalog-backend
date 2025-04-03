@@ -17,6 +17,8 @@ Globals:
         JWT_SECRET: jwt-secret
         DYNAMO_DB_ENDPOINT: http://host.docker.internal
         DYNAMO_DB_PORT: 8000
+        JWT_SECRET_KEY: verySecretOne
+        SHA256_SECRET_KEY: verySecretOne
 
 Resources:
   ProductsFunction:
@@ -33,4 +35,19 @@ Resources:
           Type: Api
           Properties:
             Path: /products/{proxy+}
+            Method: any
+  AuthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/functions/auth.handler
+      Events:
+        Direct:
+          Type: Api
+          Properties:
+            Path: /auth
+            Method: any
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /auth/{proxy+}
             Method: any
