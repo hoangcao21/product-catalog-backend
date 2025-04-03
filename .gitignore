@@ -6,6 +6,9 @@ dist
 .env*
 docker-compose.yml
 
+# Generated folder by AWS DynamoDB local
+docker/*
+
 # Git credentials
 .npmrc
 
