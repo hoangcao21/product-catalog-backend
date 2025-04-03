@@ -1,0 +1,36 @@
+# AWS SAM template to provision AWS resources
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Architectures: # pick the correct arch for your laptop :)
+      - arm64
+      # - x86_64
+    MemorySize: 512
+    Timeout: 60
+    Environment:
+      Variables:
+        AWS_DEFAULT_REGION: ap-southeast-1
+        NODE_ENV: dev
+        JWT_SECRET: jwt-secret
+        DYNAMO_DB_ENDPOINT: http://host.docker.internal
+        DYNAMO_DB_PORT: 8000
+
+Resources:
+  ProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/functions/products.handler
+      Events:
+        Direct:
+          Type: Api
+          Properties:
+            Path: /products
+            Method: any
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /products/{proxy+}
+            Method: any
