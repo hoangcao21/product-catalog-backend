@@ -6,6 +6,7 @@ import {
   getProductsQuerySchema,
 } from 'src/modules/product/dtos/request/get-product.query.dto';
 import { ProductApiModule } from 'src/modules/product/product.api.module';
+import { auth } from 'src/shared/middlewares/auth.middleware';
 import { COMMON_MIDDLEWARES } from 'src/shared/middlewares/common.middleware';
 import {
   ValidatedApiEvent,
@@ -40,4 +41,5 @@ const routes: Route<APIGatewayProxyEvent, unknown>[] = [
 
 export const handler = middy()
   .use(COMMON_MIDDLEWARES)
+  .use(auth('cookie_access_token'))
   .handler(httpRouterHandler(routes));
