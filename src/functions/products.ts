@@ -10,7 +10,7 @@ import { COMMON_MIDDLEWARES } from 'src/shared/middlewares/common.middleware';
 import {
   ValidatedApiEvent,
   parseAndValidateQuery,
-} from 'src/shared/middlewares/parse-and-validate-query.middleware';
+} from 'src/shared/middlewares/parse-and-validate.middleware';
 
 const getProductsHandler = async (
   event: ValidatedApiEvent<GetProductQueryDto>,
