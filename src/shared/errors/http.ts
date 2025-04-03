@@ -26,10 +26,20 @@ export class HttpError extends Error {
 
 export class BadRequestError extends HttpError {
   constructor(
-    public code: string = 'GENERIC_ERROR',
+    public code: string = 'BAD_REQUEST_ERROR',
     message: string,
     public cause?: object,
   ) {
     super(HttpStatus.BAD_REQUEST, code, message, cause);
+  }
+}
+
+export class UnauthorizedError extends HttpError {
+  constructor(
+    public code: string = 'UNAUTHORIZED_ERROR',
+    message: string,
+    public cause?: object,
+  ) {
+    super(HttpStatus.UNAUTHORIZED, code, message, cause);
   }
 }

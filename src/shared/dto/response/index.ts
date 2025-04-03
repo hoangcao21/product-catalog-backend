@@ -22,11 +22,17 @@ export class HttpResponse<B> {
     readonly statusCode: number,
     readonly body?: B,
     readonly extraHeaders?: Record<string, string>,
+    readonly multiValueHeaders?: {
+      [header: string]: (string | number | boolean)[];
+    },
   ) {}
 
   toGatewayResult(): APIGatewayProxyResult {
     return {
       statusCode: this.statusCode,
+      multiValueHeaders: {
+        ...this.multiValueHeaders,
+      },
       headers: {
         'Content-Type': 'application/json',
         ...(this.extraHeaders || {}),
@@ -37,12 +43,28 @@ export class HttpResponse<B> {
 }
 
 export class OkResponse<B> extends HttpResponse<B> {
-  constructor(body: B, extraHeaders?: Record<string, string>) {
-    super(HttpStatus.OK, body, extraHeaders);
+  constructor(
+    body: B,
+    extraHeaders?: Record<string, string>,
+    multiValueHeaders?: {
+      [header: string]: (string | number | boolean)[];
+    },
+  ) {
+    super(HttpStatus.OK, body, extraHeaders, multiValueHeaders);
   }
 
-  static fromResult<R>(result: R): OkResponse<StandardResponseBody<R>> {
-    return new OkResponse(new StandardResponseBody(true, result));
+  static fromResult<R>(
+    result: R,
+    extraHeaders?: Record<string, string>,
+    multiValueHeaders?: {
+      [header: string]: (string | number | boolean)[];
+    },
+  ): OkResponse<StandardResponseBody<R>> {
+    return new OkResponse(
+      new StandardResponseBody(true, result),
+      extraHeaders,
+      multiValueHeaders,
+    );
   }
 
   static fromPagination<R>(
