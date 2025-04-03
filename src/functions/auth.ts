@@ -3,6 +3,7 @@ import httpRouterHandler, { Method, Route } from '@middy/http-router';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { AuthApiModule } from 'src/modules/auth/auth.api.module';
 import { LoginDto, loginSchema } from 'src/modules/auth/dtos/request/login.dto';
+import { SessionApiEvent, auth } from 'src/shared/middlewares/auth.middleware';
 import { COMMON_MIDDLEWARES } from 'src/shared/middlewares/common.middleware';
 import {
   ValidatedApiEvent,
@@ -20,6 +21,17 @@ const postLoginHandler = async (
   return (await controller.login(userName, password)).toGatewayResult();
 };
 
+const postRefreshHandler = async (
+  event: SessionApiEvent,
+): Promise<APIGatewayProxyResult> => {
+  const authApiModule = await AuthApiModule.init();
+  const controller = authApiModule.authController;
+
+  return (
+    await controller.rotateCredentials(event['x-cookie'])
+  ).toGatewayResult();
+};
+
 const routes: Route<APIGatewayProxyEvent, unknown>[] = [
   {
     method: 'POST' as Method,
@@ -32,6 +44,13 @@ const routes: Route<APIGatewayProxyEvent, unknown>[] = [
         ),
       )
       .handler(postLoginHandler),
+  },
+  {
+    method: 'POST' as Method,
+    path: '/auth/refresh',
+    handler: middy()
+      .use(auth('cookie_refresh_token', true))
+      .handler(postRefreshHandler),
   },
 ];
 

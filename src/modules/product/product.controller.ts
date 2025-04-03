@@ -15,6 +15,8 @@ export class ProductController {
     const response: PaginationQueryResponse<ProductEntity> =
       await this.productService.getProducts(dto);
 
+    console.log('✅ Got products successfully');
+
     return OkResponse.fromPagination(response);
   }
 }
