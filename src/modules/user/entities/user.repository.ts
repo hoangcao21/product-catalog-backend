@@ -46,12 +46,18 @@ export class UserRepository extends Repository<UserEntity> {
     super(UserModel);
   }
 
-  async getOneByUserName(userName: string): Promise<UserEntity> {
+  async findOneByUserName(userName: string): Promise<UserEntity> {
     const userEntities = await this.model
       .query('userName')
       .using(UserNameGlobalIndex.name)
       .eq(userName)
       .exec();
+
+    return userEntities?.length ? userEntities[0] : null;
+  }
+
+  async findOneByUserId(userId: string): Promise<UserEntity> {
+    const userEntities = await this.model.query('userId').eq(userId).exec();
 
     return userEntities?.length ? userEntities[0] : null;
   }
