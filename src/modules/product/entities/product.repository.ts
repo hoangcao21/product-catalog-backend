@@ -1,5 +1,5 @@
 import * as dynamoose from 'dynamoose';
-import { Query, Scan } from 'dynamoose/dist/ItemRetriever';
+import { Query, QueryResponse, Scan } from 'dynamoose/dist/ItemRetriever';
 import { PaginationQueryResponse } from 'src/shared/database/pagination-query-response';
 import { Repository } from 'src/shared/database/repository';
 import { isDefined } from 'src/shared/validation';
@@ -90,5 +90,15 @@ export class ProductRepository extends Repository<ProductEntity> {
     const result = await this.paginate(operation, cursor, limit);
 
     return result;
+  }
+
+  async findOne(productId: string): Promise<ProductEntity> {
+    const result: QueryResponse<ProductEntity> = await this.model
+      .query('productId')
+      .eq(productId)
+      .limit(1)
+      .exec();
+
+    return result?.length ? result[0] : null;
   }
 }

@@ -12,4 +12,8 @@ export class ProductService {
   ): Promise<PaginationQueryResponse<ProductEntity>> {
     return this.productRepo.findByProps(dto);
   }
+
+  async getOne(productId: string): Promise<ProductEntity> {
+    return this.productRepo.findOne(productId);
+  }
 }
