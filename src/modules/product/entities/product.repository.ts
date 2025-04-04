@@ -78,18 +78,13 @@ export class ProductRepository extends Repository<ProductEntity> {
   ): Promise<PaginationQueryResponse<ProductEntity>> {
     const { category, name, limit, cursor } = props;
 
-    let operation: Query<ProductEntity> | Scan<ProductEntity> = this.model
+    const operation: Query<ProductEntity> | Scan<ProductEntity> = this.model
       .query('categoryLowercase')
-      .eq(category)
+      .eq(category.toLowerCase())
       .using(CategoryGlobalIndex.name);
 
     if (isDefined(name)) {
-      operation = this.model
-        .scan('categoryLowercase')
-        .eq(category.toLowerCase())
-        .where('nameLowercase')
-        .contains(name.toLowerCase()) // "contains" does not support non-key attribute when uses with ".query()" function yet
-        .using(CategoryGlobalIndex.name);
+      operation.where('nameLowercase').contains(name.toLowerCase());
     }
 
     const result = await this.paginate(operation, cursor, limit);
