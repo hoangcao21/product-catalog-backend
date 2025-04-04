@@ -17,7 +17,7 @@ export const COMMON_MIDDLEWARES = [
     },
     awsContext: true,
   }),
-  cors({ origin: '*' }),
+  cors({ origin: '*', headers: 'Content-Type', credentials: true }),
   jsonBodyParser({ disableContentTypeError: true }),
   handleError(),
 ];
