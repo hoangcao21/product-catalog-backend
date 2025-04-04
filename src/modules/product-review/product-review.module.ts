@@ -1,5 +1,7 @@
 import { initDatabaseConnection } from 'src/shared/database/database-connection';
 
+import { ProductModule } from '../product/product.module';
+import { UserModule } from '../user/user.module';
 import {
   ProductReviewRepository,
   createProductReviewTable,
@@ -12,10 +14,12 @@ export class ProductReviewModule {
   readonly productReviewRepository: ProductReviewRepository;
   readonly productReviewService: ProductReviewService;
 
-  private constructor() {
+  private constructor(userModule: UserModule, productModule: ProductModule) {
     this.productReviewRepository = new ProductReviewRepository();
     this.productReviewService = new ProductReviewService(
       this.productReviewRepository,
+      userModule.userService,
+      productModule.productService,
     );
   }
 
@@ -25,7 +29,10 @@ export class ProductReviewModule {
 
       await createProductReviewTable();
 
-      this.module = new ProductReviewModule();
+      this.module = new ProductReviewModule(
+        await UserModule.init(),
+        await ProductModule.init(),
+      );
     }
 
     return this.module;
