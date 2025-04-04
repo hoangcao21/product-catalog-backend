@@ -26,28 +26,68 @@ Resources:
     Properties:
       Handler: dist/functions/products.handler
       Events:
-        Direct:
+        DirectPost:
           Type: Api
           Properties:
             Path: /products
-            Method: any
-        CatchAll:
+            Method: POST
+        DirectPut:
+          Type: Api
+          Properties:
+            Path: /products
+            Method: PUT
+        DirectGet:
+          Type: Api
+          Properties:
+            Path: /products
+            Method: GET
+        DirectDelete:
+          Type: Api
+          Properties:
+            Path: /products
+            Method: DELETE
+        CatchAllPost:
           Type: Api
           Properties:
             Path: /products/{proxy+}
-            Method: any
+            Method: POST
+        CatchAllPut:
+          Type: Api
+          Properties:
+            Path: /products/{proxy+}
+            Method: PUT
+        CatchAllGet:
+          Type: Api
+          Properties:
+            Path: /products/{proxy+}
+            Method: GET
+        CatchAllDelete:
+          Type: Api
+          Properties:
+            Path: /products/{proxy+}
+            Method: DELETE
   AuthFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/functions/auth.handler
       Events:
-        Direct:
+        DirectPost:
           Type: Api
           Properties:
             Path: /auth
-            Method: any
-        CatchAll:
+            Method: POST
+        CatchAllPost:
           Type: Api
           Properties:
             Path: /auth/{proxy+}
-            Method: any
+            Method: POST
+  PreflightFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/functions/preflight.handler
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: OPTIONS
