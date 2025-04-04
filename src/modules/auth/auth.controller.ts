@@ -1,6 +1,7 @@
 import { OkResponse, StandardResponseBody } from 'src/shared/dto/response';
 
-import { AuthService, CookieCredentials } from './auth.service';
+import { AuthService } from './auth.service';
+import { CookieCredentials } from './cookie.service';
 
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
