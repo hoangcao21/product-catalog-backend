@@ -2,15 +2,13 @@ import middy from '@middy/core';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import * as cookie from 'cookie';
 import { AuthModule } from 'src/modules/auth/auth.module';
-import {
-  AuthService,
-  CredentialCookieKey,
-} from 'src/modules/auth/auth.service';
+import { CredentialCookieKey } from 'src/modules/auth/cookie.service';
 
 import { UnauthorizedError } from '../errors/http';
 
 export interface SessionApiEvent extends APIGatewayProxyEvent {
   'x-cookie'?: string;
+  userInformation?: { userId: string; userName: string };
 }
 
 export const auth = (
@@ -30,7 +28,7 @@ export const auth = (
       );
     }
 
-    const authService: AuthService = (await AuthModule.init()).authService;
+    const { authService, cookieService } = await AuthModule.init();
 
     const allowed = authService.allow(rawCookie, cookieKey);
 
@@ -44,6 +42,16 @@ export const auth = (
     if (extract) {
       apiEvent['x-cookie'] =
         `${cookieKey}=${cookie.parse(rawCookie)[cookieKey]}`;
+
+      const jwtPayload = cookieService.transformCookieIntoJwtPayload(
+        rawCookie,
+        cookieKey,
+      );
+
+      apiEvent.userInformation = {
+        userId: jwtPayload.userId,
+        userName: jwtPayload.userName,
+      };
     }
 
     console.log('💂 Cookie is valid!');
