@@ -36,7 +36,7 @@ export class ProductController {
     productId: string,
   ): Promise<OkResponse<StandardResponseBody<ProductDto>>> {
     const productEntity: ProductEntity =
-      await this.productService.getOne(productId);
+      await this.productService.getProduct(productId);
 
     if (!productEntity) {
       throw new BadRequestError(
@@ -52,5 +52,21 @@ export class ProductController {
     return OkResponse.fromResult(
       ProductDto.from(productEntity, productReviewEntities),
     );
+  }
+
+  async createProductReview(
+    userId: string,
+    productId: string,
+    rating: number,
+    comment: string,
+  ): Promise<OkResponse<StandardResponseBody<ProductDto>>> {
+    await this.productReviewService.createProductReview(
+      userId,
+      productId,
+      rating,
+      comment,
+    );
+
+    return this.getProductDetail(productId);
   }
 }

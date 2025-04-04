@@ -75,4 +75,20 @@ export class ProductReviewRepository extends Repository<ProductReviewEntity> {
 
     return result;
   }
+
+  async create(
+    userId: string,
+    productId: string,
+    rating: number,
+    comment: string,
+  ): Promise<ProductReviewEntity> {
+    const entity: ProductReviewEntity = (await new this.model({
+      userId,
+      productId,
+      rating,
+      comment,
+    } as Partial<ProductReviewEntity>).save()) as ProductReviewEntity;
+
+    return entity;
+  }
 }
