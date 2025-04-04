@@ -1,6 +1,5 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
 import HttpStatus from 'http-status';
-import { PaginationQueryResponse } from 'src/shared/database/pagination-query-response';
 
 export class StandardResponseBody<R> {
   constructor(
@@ -68,10 +67,8 @@ export class OkResponse<B> extends HttpResponse<B> {
   }
 
   static fromPagination<R>(
-    response: PaginationQueryResponse<R>,
+    response: PaginatedResponseBody<R>,
   ): OkResponse<PaginatedResponseBody<R>> {
-    return new OkResponse(
-      new PaginatedResponseBody(true, response.result, response.nextCursor),
-    );
+    return new OkResponse(response);
   }
 }
