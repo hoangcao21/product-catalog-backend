@@ -12,3 +12,6 @@ docker/*
 # Git credentials
 .npmrc
 
+# Ignore all public/private key
+*.pem
+
