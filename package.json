@@ -9,7 +9,7 @@
     "local:container:restart": "npm run local:container:stop && npm run local:container:start",
     "local:container:exec": "npm run local:docker exec",
     "local:container:logs": "npm run local:docker logs",
-    "dev": "npm run build && sam local start-api",
+    "dev": "caddy start && npm run build && sam local start-api",
     "typecheck": "tsc",
     "build:functions": "esbuild src/functions/*.ts --bundle --minify --platform=node --target=es2022 --outdir=dist/functions",
     "build": "npm run typecheck && npm run build:functions",

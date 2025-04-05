@@ -1,0 +1,7 @@
+# Caddyfile
+localhost:8443 {
+    # Use mkcert certs
+    tls ./localhost.pem ./localhost-key.pem
+
+    reverse_proxy http://localhost:3000
+}

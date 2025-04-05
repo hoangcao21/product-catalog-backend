@@ -76,7 +76,12 @@ export class CookieService {
     const accessTokenCookie = cookie.serialize(
       ACCESS_TOKEN_COOKIE_KEY,
       signedAccessToken,
-      { httpOnly: true, path: '/', expires: accessTokenExpiresAt.toJSDate() },
+      {
+        httpOnly: true,
+        path: '/',
+        expires: accessTokenExpiresAt.toJSDate(),
+        secure: true,
+      },
     );
 
     return accessTokenCookie;
@@ -105,7 +110,12 @@ export class CookieService {
     const refreshTokenCookie = cookie.serialize(
       REFRESH_TOKEN_COOKIE_KEY,
       signedRefreshToken,
-      { httpOnly: true, path: '/', expires: refreshTokenExpiresAt.toJSDate() },
+      {
+        httpOnly: true,
+        path: '/',
+        expires: refreshTokenExpiresAt.toJSDate(),
+        secure: true,
+      },
     );
 
     return refreshTokenCookie;
