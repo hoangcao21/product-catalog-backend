@@ -17,6 +17,14 @@ export async function seedUpUsers() {
       .getResult(),
   );
 
+  seedData.push(
+    new UserEntityBuilder()
+      .buildUserId(chance.guid({ version: 4 }))
+      .buildUserName('sampleuser')
+      .buildHashedPassword(doHashing('123456@abc'))
+      .getResult(),
+  );
+
   console.log('✅ Seeding data for UserTable is ready');
 
   console.log('🔃 Seeding data into UserTable...');

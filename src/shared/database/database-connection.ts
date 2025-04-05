@@ -30,6 +30,4 @@ export async function initDatabaseConnection() {
       `${process.env.DYNAMO_DB_ENDPOINT}:${process.env.DYNAMO_DB_PORT}`,
     );
   }
-
-  console.log('✅ Connected to database');
 }
