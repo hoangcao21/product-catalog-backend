@@ -1,6 +1,11 @@
+import { seedUpUsers } from 'src/seeds/users';
 import { initDatabaseConnection } from 'src/shared/database/database-connection';
 
-import { UserRepository, createUserTable } from './entities/user.repository';
+import {
+  UserModel,
+  UserRepository,
+  createUserTable,
+} from './entities/user.repository';
 import { UserService } from './user.service';
 
 export class UserModule {
@@ -13,6 +18,16 @@ export class UserModule {
       await initDatabaseConnection();
 
       await createUserTable();
+
+      if (process.env.NODE_ENV !== 'dev') {
+        const count = await UserModel.scan().all().count().exec();
+
+        if (count.count === 0) {
+          console.log('🔃 Seeding up users for non-dev environment');
+
+          await seedUpUsers();
+        }
+      }
 
       const userService: UserService = new UserService(new UserRepository());
 

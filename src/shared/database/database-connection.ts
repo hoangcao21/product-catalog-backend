@@ -5,7 +5,9 @@ import * as dynamoose from 'dynamoose';
  */
 
 export async function initDatabaseConnection() {
-  (await dynamoose.logger()).providers.set(console);
+  if (process.env.NODE_ENV === 'dev') {
+    (await dynamoose.logger()).providers.set(console);
+  }
 
   console.log('✅ Dynamoose Logger is enabled');
 

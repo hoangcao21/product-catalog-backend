@@ -16,7 +16,10 @@
     "format": "prettier --write .",
     "lint": "eslint --fix .",
     "seed:up": "dotenvx run --env-file=.env.seed -- tsx src/seeds up",
-    "seed:down": "dotenvx run --env-file=.env.seed -- tsx src/seeds down"
+    "seed:down": "dotenvx run --env-file=.env.seed -- tsx src/seeds down",
+    "package:preflight": "cd dist && 7z a preflight.zip functions/preflight.js",
+    "package:auth": "cd dist && 7z a auth.zip functions/auth.js",
+    "package:products": "cd dist && 7z a products.zip functions/products.js"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.39.0",

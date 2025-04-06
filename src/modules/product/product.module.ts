@@ -1,6 +1,8 @@
+import { seedUpProducts } from 'src/seeds/products';
 import { initDatabaseConnection } from 'src/shared/database/database-connection';
 
 import {
+  ProductModel,
   ProductRepository,
   createProductTable,
 } from './entities/product.repository';
@@ -16,6 +18,16 @@ export class ProductModule {
       await initDatabaseConnection();
 
       await createProductTable();
+
+      if (process.env.NODE_ENV !== 'dev') {
+        const count = await ProductModel.scan().all().count().exec();
+
+        if (count.count === 0) {
+          console.log('🔃 Seeding up products for non-dev environment');
+
+          await seedUpProducts();
+        }
+      }
 
       const productService: ProductService = new ProductService(
         new ProductRepository(),
