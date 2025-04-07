@@ -7,7 +7,7 @@ export enum CursorDirection {
 
 export class QueryDto {
   constructor(
-    readonly limit: number,
+    readonly limit: number = 10,
     readonly cursor: string,
   ) {}
 }
