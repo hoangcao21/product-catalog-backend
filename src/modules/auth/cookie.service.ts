@@ -82,6 +82,7 @@ export class CookieService {
         path: '/',
         expires: accessTokenExpiresAt.toJSDate(),
         secure: true,
+        sameSite: 'none',
       },
     );
 
@@ -116,6 +117,7 @@ export class CookieService {
         path: '/',
         expires: refreshTokenExpiresAt.toJSDate(),
         secure: true,
+        sameSite: 'none',
       },
     );
 
