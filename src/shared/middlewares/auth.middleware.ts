@@ -18,6 +18,13 @@ export const auth = (
   const before: middy.MiddlewareFn = async ({ event }) => {
     const apiEvent = event as SessionApiEvent;
 
+    if (!apiEvent.headers) {
+      throw new UnauthorizedError(
+        'COOKIE_NOT_FOUND_ERR',
+        'Cookie is not present in headers',
+      );
+    }
+
     const rawCookie: string =
       apiEvent.headers['cookie'] || apiEvent.headers['Cookie'];
 
