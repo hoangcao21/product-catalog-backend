@@ -1,4 +1,5 @@
 import { seedUpProducts } from 'src/seeds/products';
+import config from 'src/shared/config';
 import { initDatabaseConnection } from 'src/shared/database/database-connection';
 
 import {
@@ -19,7 +20,7 @@ export class ProductModule {
 
       await createProductTable();
 
-      if (process.env.NODE_ENV !== 'dev') {
+      if (config.NODE_ENV !== 'dev') {
         const count = await ProductModel.scan().all().count().exec();
 
         if (count.count === 0) {

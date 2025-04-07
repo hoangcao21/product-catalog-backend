@@ -25,6 +25,8 @@ export class UserEntityBuilder extends BaseBuilder<UserEntity> {
   }
 
   getResult: () => UserEntity = () => {
+    console.log('UserEntityBuilder.object ', { object: this.object });
+
     return new UserModel(this.object);
   };
 }

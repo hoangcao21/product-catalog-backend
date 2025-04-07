@@ -2,10 +2,11 @@ import * as cookie from 'cookie';
 import jsonwebtoken from 'jsonwebtoken';
 import { DateTime } from 'luxon';
 import ms from 'ms';
+import config from 'src/shared/config';
 
 import { UserEntity } from '../user/entities/user.entity';
 
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const JWT_SECRET_KEY = config.JWT_SECRET_KEY;
 
 // eslint-disable-next-line @typescript-eslint/prefer-as-const
 const ACCESS_TOKEN_COOKIE_KEY: 'cookie_access_token' = 'cookie_access_token';

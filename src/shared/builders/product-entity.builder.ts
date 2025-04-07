@@ -48,6 +48,8 @@ export class ProductEntityBuilder extends BaseBuilder<ProductEntity> {
   }
 
   getResult: () => ProductEntity = () => {
+    console.log('ProductEntityBuilder.object ', { object: this.object });
+
     return new ProductModel(this.object);
   };
 }

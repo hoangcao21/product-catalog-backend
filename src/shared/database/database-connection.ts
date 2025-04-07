@@ -1,20 +1,22 @@
 import * as dynamoose from 'dynamoose';
 
+import config from '../config';
+
 /**
  * Be aware that
  */
 
 export async function initDatabaseConnection() {
-  if (process.env.NODE_ENV === 'dev') {
+  if (config.NODE_ENV === 'dev') {
     (await dynamoose.logger()).providers.set(console);
   }
 
   console.log('✅ Dynamoose Logger is enabled');
 
-  console.log('🔃 Connect to database...', { NODE_ENV: process.env.NODE_ENV });
+  console.log('🔃 Connect to database...', { NODE_ENV: config.NODE_ENV });
 
   // Create production-ready Dynamoose instance
-  if (!['dev'].includes(process.env.NODE_ENV)) {
+  if (!['dev'].includes(config.NODE_ENV)) {
     const ddb = new dynamoose.aws.ddb.DynamoDB({
       region: 'ap-southeast-1',
     });
@@ -25,7 +27,7 @@ export async function initDatabaseConnection() {
   else {
     // Default: http://localhost:8000
     dynamoose.aws.ddb.local(
-      `${process.env.DYNAMO_DB_ENDPOINT}:${process.env.DYNAMO_DB_PORT}`,
+      `${config.DYNAMO_DB_ENDPOINT}:${config.DYNAMO_DB_PORT}`,
     );
   }
 }
