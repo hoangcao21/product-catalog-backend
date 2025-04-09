@@ -19,7 +19,8 @@
     "seed:down": "dotenvx run --env-file=.env.seed -- tsx src/seeds down",
     "package:preflight": "cd dist && 7z a preflight.zip functions/preflight.js",
     "package:auth": "cd dist && 7z a auth.zip functions/auth.js",
-    "package:products": "cd dist && 7z a products.zip functions/products.js"
+    "package:products": "cd dist && 7z a products.zip functions/products.js",
+    "package:all": "yarn package:preflight && yarn package:auth && yarn package:products"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.39.0",
